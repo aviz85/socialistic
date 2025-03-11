@@ -8,154 +8,166 @@ from posts.models import Post, Comment, PostLike, CommentLike
 from projects.models import Project, ProjectCollaborator, CollaborationRequest
 from notifications.models import Notification
 from rest_framework_simplejwt.tokens import RefreshToken
+import datetime
 
 User = get_user_model()
 
 
 @pytest.fixture
 def api_client():
-    """Return an unauthenticated API client for testing API views."""
+    """Returns an authenticated API client."""
     return APIClient()
 
 
 @pytest.fixture
-def auth_client(user):
-    """Return an authenticated API client for the default test user."""
-    client = APIClient()
-    refresh = RefreshToken.for_user(user)
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
-    return client
-
-
-@pytest.fixture
-def user():
-    """Return a default test user."""
-    return User.objects.create_user(
-        email='testuser@example.com',
+def user(db):
+    """Creates a user for testing."""
+    user = User.objects.create_user(
         username='testuser',
-        password='testpassword',
-        full_name='Test User'
+        email='test@example.com',
+        password='password',
+        full_name='Test User',
+        bio='Test user bio'
     )
+    return user
 
 
 @pytest.fixture
-def admin_user():
-    """Return an admin user for testing."""
-    return User.objects.create_superuser(
-        email='admin@example.com',
+def auth_client(api_client, user):
+    """Returns an authenticated API client."""
+    api_client.force_authenticate(user=user)
+    return api_client
+
+
+@pytest.fixture
+def admin_user(db):
+    """Creates an admin user for testing."""
+    admin = User.objects.create_superuser(
         username='admin',
-        password='adminpassword'
+        email='admin@example.com',
+        password='adminpassword',
+        full_name='Admin User'
     )
+    return admin
 
 
 @pytest.fixture
-def another_user():
-    """Return a second test user for follow/interactions testing."""
-    return User.objects.create_user(
-        email='another@example.com',
+def another_user(db):
+    """Creates another user for testing."""
+    user = User.objects.create_user(
         username='anotheruser',
-        password='testpassword',
-        full_name='Another User'
+        email='another@example.com',
+        password='password',
+        full_name='Another User',
+        bio='Another test user bio'
     )
+    return user
 
 
 @pytest.fixture
-def programming_language():
-    """Return a test programming language."""
-    return ProgrammingLanguage.objects.create(name='Python')
+def programming_language(db):
+    """Creates a programming language for testing."""
+    language = ProgrammingLanguage.objects.create(name='Python')
+    return language
 
 
 @pytest.fixture
-def skill():
-    """Return a test skill."""
-    return Skill.objects.create(name='Django', category='backend')
+def skill(db):
+    """Creates a skill for testing."""
+    skill = Skill.objects.create(name='Django', category='backend')
+    return skill
 
 
 @pytest.fixture
-def skills_set():
-    """Return a set of test skills."""
-    return [
+def skills_set(db):
+    """Creates a set of skills for testing."""
+    skills = [
         Skill.objects.create(name='React', category='frontend'),
         Skill.objects.create(name='Node.js', category='backend'),
-        Skill.objects.create(name='Docker', category='devops')
+        Skill.objects.create(name='PostgreSQL', category='database')
     ]
+    return skills
 
 
 @pytest.fixture
-def follow_relationship(user, another_user):
-    """Create a follow relationship between users."""
-    return Follow.objects.create(follower=user, following=another_user)
+def follow_relationship(db, user, another_user):
+    """Creates a follow relationship between two users."""
+    follow = Follow.objects.create(follower=user, following=another_user)
+    return follow
 
 
 @pytest.fixture
-def post(user, programming_language):
-    """Return a test post."""
-    return Post.objects.create(
+def post(db, user, programming_language):
+    """Creates a post for testing."""
+    post = Post.objects.create(
         author=user,
         content='Test post content',
-        code_snippet='print("Hello, World!")',
+        code_snippet='print("Hello, world!")',
         programming_language=programming_language
     )
+    return post
 
 
 @pytest.fixture
-def comment(post, another_user):
-    """Return a test comment."""
-    return Comment.objects.create(
-        author=another_user,
+def comment(db, user, post):
+    """Creates a comment for testing."""
+    comment = Comment.objects.create(
+        author=user,
         post=post,
-        content='Test comment'
+        content='Test comment content'
     )
+    return comment
 
 
 @pytest.fixture
-def post_like(post, another_user):
-    """Return a test post like."""
-    return PostLike.objects.create(user=another_user, post=post)
+def post_like(db, user, post):
+    """Creates a post like for testing."""
+    like = PostLike.objects.create(user=user, post=post)
+    return like
 
 
 @pytest.fixture
-def comment_like(comment, user):
-    """Return a test comment like."""
-    return CommentLike.objects.create(user=user, comment=comment)
+def comment_like(db, user, comment):
+    """Creates a comment like for testing."""
+    like = CommentLike.objects.create(user=user, comment=comment)
+    return like
 
 
 @pytest.fixture
-def project(user, skills_set):
-    """Return a test project."""
+def project(db, user, skill):
+    """Creates a project for testing."""
     project = Project.objects.create(
         creator=user,
         title='Test Project',
-        description='Test project description',
-        repo_url='https://github.com/test/project'
+        description='This is a test project',
+        repository_url='https://github.com/testuser/test-project',
+        status='active'
     )
-    project.tech_stack.add(*skills_set)
-    ProjectCollaborator.objects.create(
-        user=user,
-        project=project,
-        role='owner'
-    )
+    project.tech_stack.add(skill)
+    ProjectCollaborator.objects.create(project=project, user=user, role='creator')
     return project
 
 
 @pytest.fixture
-def collaboration_request(project, another_user):
-    """Return a test collaboration request."""
-    return CollaborationRequest.objects.create(
+def collaboration_request(db, another_user, project):
+    """Creates a collaboration request for testing."""
+    request = CollaborationRequest.objects.create(
         user=another_user,
         project=project,
-        message='I would like to collaborate'
+        message='I would like to collaborate on this project',
+        status='pending'
     )
+    return request
 
 
 @pytest.fixture
-def notification(user, another_user, post):
-    """Return a test notification."""
-    return Notification.objects.create(
+def notification(db, user, another_user):
+    """Creates a notification for testing."""
+    notification = Notification.objects.create(
         recipient=user,
         sender=another_user,
-        type='like',
-        content_type=ContentType.objects.get_for_model(Post),
-        object_id=post.id,
-        text=f"{another_user.username} liked your post"
-    ) 
+        notification_type='follow',
+        text=f"{another_user.username} started following you.",
+        is_read=False
+    )
+    return notification 

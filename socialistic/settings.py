@@ -155,7 +155,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+    'ORDERING_PARAM': 'ordering',
+    'CURSOR_PAGINATION_ORDERING': '-created_at'
 }
 
 # Simple JWT
