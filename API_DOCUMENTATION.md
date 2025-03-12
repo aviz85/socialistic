@@ -56,14 +56,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/auth/me/`
 - **Method**: `GET`
-- **Description**: API endpoint to get the authenticated user.
+- **Description**: API endpoint to get or update the authenticated user.
 - **Response**: `200 OK`
 
 #### Update Current User
 
 - **URL**: `/auth/me/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint to update the authenticated user.
+- **Description**: API endpoint to get or update the authenticated user.
 - **Request Body**:
   ```json
   {
@@ -113,14 +113,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/users/me/`
 - **Method**: `GET`
-- **Description**: API endpoint to get the authenticated user.
+- **Description**: API endpoint to get or update the authenticated user.
 - **Response**: `200 OK`
 
 #### Update Current User Profile
 
 - **URL**: `/users/me/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint to update the authenticated user.
+- **Description**: API endpoint to get or update the authenticated user.
 - **Response**: `200 OK`
 
 #### Follow a User
@@ -181,7 +181,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/`
 - **Method**: `GET`
-- **Description**: API endpoint for listing posts.
+- **Description**: API endpoint for listing and creating posts.
 - **Query Parameters**:
   - `cursor`: The pagination cursor value
 - **Response**: `200 OK`
@@ -190,7 +190,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/`
 - **Method**: `POST`
-- **Description**: API endpoint for creating posts.
+- **Description**: API endpoint for listing and creating posts.
 - **Request Body**:
   ```json
   {
@@ -205,14 +205,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/{id}/`
 - **Method**: `GET`
-- **Description**: API endpoint for retrieving a post.
+- **Description**: API endpoint for retrieving, updating, and deleting a post.
 - **Response**: `200 OK`
 
 #### Update Post
 
 - **URL**: `/posts/{id}/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint for updating a post.
+- **Description**: API endpoint for retrieving, updating, and deleting a post.
 - **Request Body**:
   ```json
   {
@@ -227,7 +227,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/{id}/`
 - **Method**: `DELETE`
-- **Description**: API endpoint for deleting a post.
+- **Description**: API endpoint for retrieving, updating, and deleting a post.
 - **Response**: `204 No Content`
 
 #### Like Post
@@ -236,6 +236,13 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 - **Method**: `POST`
 - **Description**: API endpoint for liking a post.
 - **Response**: `201 Created`
+
+#### Unlike Post
+
+- **URL**: `/posts/{id}/unlike/`
+- **Method**: `DELETE`
+- **Description**: API endpoint for unliking a post.
+- **Response**: `204 No Content`
 
 #### Search Posts
 
@@ -250,18 +257,18 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 #### List Comments on Post
 
-- **URL**: `/posts/{post_id}/comments/`
+- **URL**: `/posts/{id}/comments/`
 - **Method**: `GET`
-- **Description**: API endpoint for listing comments on a post.
+- **Description**: API endpoint for listing and creating comments on a post.
 - **Query Parameters**:
   - `cursor`: The pagination cursor value
 - **Response**: `200 OK`
 
 #### Create Comment on Post
 
-- **URL**: `/posts/{post_id}/comments/`
+- **URL**: `/posts/{id}/comments/`
 - **Method**: `POST`
-- **Description**: API endpoint for creating comments on a post.
+- **Description**: API endpoint for listing and creating comments on a post.
 - **Request Body**:
   ```json
   {
@@ -274,14 +281,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/comments/{id}/`
 - **Method**: `GET`
-- **Description**: API endpoint for retrieving a comment.
+- **Description**: API endpoint for retrieving, updating, and deleting a comment.
 - **Response**: `200 OK`
 
 #### Update Comment
 
 - **URL**: `/posts/comments/{id}/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint for updating a comment.
+- **Description**: API endpoint for retrieving, updating, and deleting a comment.
 - **Request Body**:
   ```json
   {
@@ -294,21 +301,21 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/posts/comments/{id}/`
 - **Method**: `DELETE`
-- **Description**: API endpoint for deleting a comment.
+- **Description**: API endpoint for retrieving, updating, and deleting a comment.
 - **Response**: `204 No Content`
 
 #### Like Comment
 
 - **URL**: `/posts/comments/{id}/like/`
 - **Method**: `POST`
-- **Description**: API endpoint for liking a comment.
+- **Description**: API endpoint for liking/unliking a comment.
 - **Response**: `201 Created`
 
 #### Unlike Comment
 
 - **URL**: `/posts/comments/{id}/like/`
 - **Method**: `DELETE`
-- **Description**: API endpoint for unliking a comment.
+- **Description**: API endpoint for liking/unliking a comment.
 - **Response**: `204 No Content`
 
 ## Projects
@@ -319,7 +326,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/projects/`
 - **Method**: `GET`
-- **Description**: API endpoint for listing projects.
+- **Description**: API endpoint for listing and creating projects.
 - **Query Parameters**:
   - `page`: Page number for pagination
 - **Response**: `200 OK`
@@ -328,7 +335,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/projects/`
 - **Method**: `POST`
-- **Description**: API endpoint for creating projects.
+- **Description**: API endpoint for listing and creating projects.
 - **Request Body**:
   ```json
   {
@@ -345,14 +352,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/projects/{id}/`
 - **Method**: `GET`
-- **Description**: API endpoint for retrieving a project.
+- **Description**: API endpoint for retrieving, updating, and deleting a project.
 - **Response**: `200 OK`
 
 #### Update Project
 
 - **URL**: `/projects/{id}/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint for updating a project.
+- **Description**: API endpoint for retrieving, updating, and deleting a project.
 - **Request Body**:
   ```json
   {
@@ -369,7 +376,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/projects/{id}/`
 - **Method**: `DELETE`
-- **Description**: API endpoint for deleting a project.
+- **Description**: API endpoint for retrieving, updating, and deleting a project.
 - **Response**: `204 No Content`
 
 #### Request to Collaborate
@@ -433,14 +440,14 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 
 - **URL**: `/notifications/settings/`
 - **Method**: `GET`
-- **Description**: API endpoint for retrieving notification settings.
+- **Description**: API endpoint for retrieving and updating notification settings.
 - **Response**: `200 OK`
 
 #### Update Notification Settings
 
 - **URL**: `/notifications/settings/`
 - **Method**: `PUT` or `PATCH`
-- **Description**: API endpoint for updating notification settings.
+- **Description**: API endpoint for retrieving and updating notification settings.
 - **Request Body**:
   ```json
   {
@@ -551,6 +558,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
     "name": "string",
     "icon": "uri"
   },
+  "programming_language_id": 0,
   "created_at": "datetime",
   "updated_at": "datetime",
   "likes_count": 0,
@@ -597,6 +605,7 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
       "category": "string"
     }
   ],
+  "tech_stack_ids": [0],
   "status": "active",
   "created_at": "datetime",
   "updated_at": "datetime",
@@ -625,7 +634,24 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
 }
 ```
 
-### Skills Model
+### Collaboration Request Model
+
+```json
+{
+  "id": 0,
+  "user": {
+    "id": 0,
+    "username": "string",
+    "profile_image": "uri"
+  },
+  "project": 0,
+  "message": "string",
+  "status": "pending",
+  "created_at": "datetime"
+}
+```
+
+### Skill Model
 
 ```json
 {
@@ -642,5 +668,24 @@ The API uses JWT (JSON Web Token) authentication. Most endpoints require authent
   "id": 0,
   "name": "string",
   "icon": "uri"
+}
+```
+
+### Notification Setting Model
+
+```json
+{
+  "email_likes": true,
+  "email_comments": true,
+  "email_follows": true,
+  "email_mentions": true,
+  "email_project_invites": true,
+  "email_project_requests": true,
+  "push_likes": true,
+  "push_comments": true,
+  "push_follows": true,
+  "push_mentions": true,
+  "push_project_invites": true,
+  "push_project_requests": true
 }
 ``` 

@@ -36,6 +36,18 @@ class NotificationMarkReadView(APIView):
         return Response(NotificationSerializer(notification).data)
 
 
+class NotificationMarkAllReadView(APIView):
+    """
+    API endpoint for marking all notifications as read.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        notifications = Notification.objects.filter(recipient=request.user, is_read=False)
+        notifications.update(is_read=True)
+        return Response({"status": "All notifications marked as read"})
+
+
 class NotificationDeleteView(generics.DestroyAPIView):
     """
     API endpoint for deleting a notification.

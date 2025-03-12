@@ -1,1 +1,2517 @@
-{"swagger": "2.0", "info": {"title": "Socialistic API", "description": "API documentation for the Socialistic developer social network", "termsOfService": "https://www.google.com/policies/terms/", "contact": {"email": "contact@socialistic.local"}, "license": {"name": "BSD License"}, "version": "v1"}, "host": "localhost:8050", "schemes": ["http"], "basePath": "/api", "consumes": ["application/json"], "produces": ["application/json"], "securityDefinitions": {"Basic": {"type": "basic"}}, "security": [{"Basic": []}], "paths": {"/auth/login/": {"post": {"operationId": "auth_login_create", "description": "Custom JWT token view that returns user data with tokens.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/TokenObtainPair"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/TokenObtainPair"}}}, "tags": ["auth"]}, "parameters": []}, "/auth/logout/": {"post": {"operationId": "auth_logout_create", "description": "API endpoint for logout - blacklist the JWT token.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["auth"]}, "parameters": []}, "/auth/me/": {"get": {"operationId": "auth_me_read", "description": "API endpoint to get or update the authenticated user.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["auth"]}, "put": {"operationId": "auth_me_update", "description": "API endpoint to get or update the authenticated user.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/User"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["auth"]}, "patch": {"operationId": "auth_me_partial_update", "description": "API endpoint to get or update the authenticated user.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/User"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["auth"]}, "parameters": []}, "/auth/register/": {"post": {"operationId": "auth_register_create", "description": "API endpoint for user registration.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/UserCreate"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/UserCreate"}}}, "tags": ["auth"]}, "parameters": []}, "/auth/token/refresh/": {"post": {"operationId": "auth_token_refresh_create", "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/TokenRefresh"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/TokenRefresh"}}}, "tags": ["auth"]}, "parameters": []}, "/notifications/": {"get": {"operationId": "notifications_list", "description": "API endpoint for listing user notifications.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Notification"}}}}}}, "tags": ["notifications"]}, "parameters": []}, "/notifications/settings/": {"get": {"operationId": "notifications_settings_read", "description": "API endpoint for retrieving and updating notification settings.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/NotificationSetting"}}}, "tags": ["notifications"]}, "put": {"operationId": "notifications_settings_update", "description": "API endpoint for retrieving and updating notification settings.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/NotificationSetting"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/NotificationSetting"}}}, "tags": ["notifications"]}, "patch": {"operationId": "notifications_settings_partial_update", "description": "API endpoint for retrieving and updating notification settings.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/NotificationSetting"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/NotificationSetting"}}}, "tags": ["notifications"]}, "parameters": []}, "/notifications/{id}/": {"delete": {"operationId": "notifications_delete", "description": "API endpoint for deleting a notification.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["notifications"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/notifications/{id}/read/": {"put": {"operationId": "notifications_read_update", "description": "API endpoint for marking a notification as read.", "parameters": [], "responses": {"200": {"description": ""}}, "tags": ["notifications"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/posts/": {"get": {"operationId": "posts_list", "description": "API endpoint for listing and creating posts.", "parameters": [{"name": "cursor", "in": "query", "description": "The pagination cursor value.", "required": false, "type": "string"}], "responses": {"200": {"description": "", "schema": {"required": ["results"], "type": "object", "properties": {"next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Post"}}}}}}, "tags": ["posts"]}, "post": {"operationId": "posts_create", "description": "API endpoint for listing and creating posts.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Post"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/Post"}}}, "tags": ["posts"]}, "parameters": []}, "/posts/comments/{id}/": {"get": {"operationId": "posts_comments_read", "description": "API endpoint for retrieving, updating, and deleting a comment.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Comment"}}}, "tags": ["posts"]}, "put": {"operationId": "posts_comments_update", "description": "API endpoint for retrieving, updating, and deleting a comment.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Comment"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Comment"}}}, "tags": ["posts"]}, "patch": {"operationId": "posts_comments_partial_update", "description": "API endpoint for retrieving, updating, and deleting a comment.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Comment"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Comment"}}}, "tags": ["posts"]}, "delete": {"operationId": "posts_comments_delete", "description": "API endpoint for retrieving, updating, and deleting a comment.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["posts"]}, "parameters": [{"name": "id", "in": "path", "description": "A unique integer value identifying this comment.", "required": true, "type": "integer"}]}, "/posts/comments/{id}/like/": {"post": {"operationId": "posts_comments_like_create", "description": "API endpoint for liking/unliking a comment.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["posts"]}, "delete": {"operationId": "posts_comments_like_delete", "description": "API endpoint for liking/unliking a comment.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["posts"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/posts/search/": {"get": {"operationId": "posts_search_list", "description": "API endpoint for searching posts.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Post"}}}}}}, "tags": ["posts"]}, "parameters": []}, "/posts/{id}/": {"get": {"operationId": "posts_read", "description": "API endpoint for retrieving, updating, and deleting a post.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Post"}}}, "tags": ["posts"]}, "put": {"operationId": "posts_update", "description": "API endpoint for retrieving, updating, and deleting a post.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Post"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Post"}}}, "tags": ["posts"]}, "patch": {"operationId": "posts_partial_update", "description": "API endpoint for retrieving, updating, and deleting a post.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Post"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Post"}}}, "tags": ["posts"]}, "delete": {"operationId": "posts_delete", "description": "API endpoint for retrieving, updating, and deleting a post.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["posts"]}, "parameters": [{"name": "id", "in": "path", "description": "A unique integer value identifying this post.", "required": true, "type": "integer"}]}, "/posts/{id}/like/": {"post": {"operationId": "posts_like_create", "description": "API endpoint for liking a post.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["posts"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/posts/{post_id}/comments/": {"get": {"operationId": "posts_comments_list", "description": "API endpoint for listing and creating comments on a post.", "parameters": [{"name": "cursor", "in": "query", "description": "The pagination cursor value.", "required": false, "type": "string"}], "responses": {"200": {"description": "", "schema": {"required": ["results"], "type": "object", "properties": {"next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Comment"}}}}}}, "tags": ["posts"]}, "post": {"operationId": "posts_comments_create", "description": "API endpoint for listing and creating comments on a post.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Comment"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/Comment"}}}, "tags": ["posts"]}, "parameters": [{"name": "post_id", "in": "path", "required": true, "type": "string"}]}, "/programming-languages/": {"get": {"operationId": "programming-languages_list", "description": "API endpoint to list all programming languages.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/ProgrammingLanguage"}}}}}}, "tags": ["programming-languages"]}, "parameters": []}, "/projects/": {"get": {"operationId": "projects_list", "description": "API endpoint for listing and creating projects.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Project"}}}}}}, "tags": ["projects"]}, "post": {"operationId": "projects_create", "description": "API endpoint for listing and creating projects.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Project"}}], "responses": {"201": {"description": "", "schema": {"$ref": "#/definitions/Project"}}}, "tags": ["projects"]}, "parameters": []}, "/projects/collaboration-requests/": {"get": {"operationId": "projects_collaboration-requests_list", "description": "API endpoint for listing collaboration requests for projects created by the user.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/CollaborationRequest"}}}}}}, "tags": ["projects"]}, "parameters": []}, "/projects/collaboration-requests/{id}/respond/": {"post": {"operationId": "projects_collaboration-requests_respond_create", "description": "API endpoint for responding to a collaboration request.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["projects"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/projects/{id}/": {"get": {"operationId": "projects_read", "description": "API endpoint for retrieving, updating, and deleting a project.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Project"}}}, "tags": ["projects"]}, "put": {"operationId": "projects_update", "description": "API endpoint for retrieving, updating, and deleting a project.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Project"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Project"}}}, "tags": ["projects"]}, "patch": {"operationId": "projects_partial_update", "description": "API endpoint for retrieving, updating, and deleting a project.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/Project"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/Project"}}}, "tags": ["projects"]}, "delete": {"operationId": "projects_delete", "description": "API endpoint for retrieving, updating, and deleting a project.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["projects"]}, "parameters": [{"name": "id", "in": "path", "description": "A unique integer value identifying this project.", "required": true, "type": "integer"}]}, "/projects/{id}/collaborate/": {"post": {"operationId": "projects_collaborate_create", "description": "API endpoint for requesting to collaborate on a project.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["projects"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/projects/{id}/leave/": {"delete": {"operationId": "projects_leave_delete", "description": "API endpoint for leaving a project.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["projects"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/search/posts/": {"get": {"operationId": "search_posts_list", "description": "API endpoint for searching posts.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Post"}}}}}}, "tags": ["search"]}, "parameters": []}, "/search/projects/": {"get": {"operationId": "search_projects_list", "description": "API endpoint for searching projects.", "parameters": [{"name": "search", "in": "query", "description": "A search term.", "required": false, "type": "string"}, {"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Project"}}}}}}, "tags": ["search"]}, "parameters": []}, "/search/users/": {"get": {"operationId": "search_users_list", "description": "API endpoint for searching users.", "parameters": [{"name": "search", "in": "query", "description": "A search term.", "required": false, "type": "string"}, {"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/User"}}}}}}, "tags": ["search"]}, "parameters": []}, "/users/": {"get": {"operationId": "users_list", "description": "API endpoint for listing users.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/User"}}}}}}, "tags": ["users"]}, "parameters": []}, "/users/me/": {"get": {"operationId": "users_me_read", "description": "API endpoint to get or update the authenticated user.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["users"]}, "put": {"operationId": "users_me_update", "description": "API endpoint to get or update the authenticated user.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/User"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["users"]}, "patch": {"operationId": "users_me_partial_update", "description": "API endpoint to get or update the authenticated user.", "parameters": [{"name": "data", "in": "body", "required": true, "schema": {"$ref": "#/definitions/User"}}], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["users"]}, "parameters": []}, "/users/{id}/": {"get": {"operationId": "users_read", "description": "API endpoint for retrieving a user.", "parameters": [], "responses": {"200": {"description": "", "schema": {"$ref": "#/definitions/User"}}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "description": "A unique integer value identifying this user.", "required": true, "type": "integer"}]}, "/users/{id}/follow/": {"post": {"operationId": "users_follow_create", "description": "API endpoint for following a user.", "parameters": [], "responses": {"201": {"description": ""}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/users/{id}/followers/": {"get": {"operationId": "users_followers_list", "description": "API endpoint for listing a user's followers.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/User"}}}}}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/users/{id}/following/": {"get": {"operationId": "users_following_list", "description": "API endpoint for listing users that a user is following.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/User"}}}}}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/users/{id}/posts/": {"get": {"operationId": "users_posts_list", "description": "API endpoint for listing a user's posts.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Post"}}}}}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/users/{id}/projects/": {"get": {"operationId": "users_projects_list", "description": "API endpoint for listing a user's projects.", "parameters": [{"name": "page", "in": "query", "description": "A page number within the paginated result set.", "required": false, "type": "integer"}], "responses": {"200": {"description": "", "schema": {"required": ["count", "results"], "type": "object", "properties": {"count": {"type": "integer"}, "next": {"type": "string", "format": "uri", "x-nullable": true}, "previous": {"type": "string", "format": "uri", "x-nullable": true}, "results": {"type": "array", "items": {"$ref": "#/definitions/Project"}}}}}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}, "/users/{id}/unfollow/": {"delete": {"operationId": "users_unfollow_delete", "description": "API endpoint for unfollowing a user.", "parameters": [], "responses": {"204": {"description": ""}}, "tags": ["users"]}, "parameters": [{"name": "id", "in": "path", "required": true, "type": "string"}]}}, "definitions": {"TokenObtainPair": {"required": ["email", "password"], "type": "object", "properties": {"email": {"title": "Email", "type": "string", "minLength": 1}, "password": {"title": "Password", "type": "string", "minLength": 1}}}, "Skill": {"required": ["name"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "name": {"title": "Name", "type": "string", "maxLength": 50, "minLength": 1}, "category": {"title": "Category", "type": "string", "enum": ["frontend", "backend", "mobile", "devops", "data", "design", "other"]}}}, "User": {"required": ["username"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "username": {"title": "Username", "type": "string", "maxLength": 30, "minLength": 1}, "email": {"title": "Email address", "type": "string", "format": "email", "readOnly": true, "minLength": 1}, "full_name": {"title": "Full name", "type": "string", "maxLength": 100}, "bio": {"title": "Bio", "type": "string"}, "profile_image": {"title": "Profile image", "type": "string", "readOnly": true, "x-nullable": true, "format": "uri"}, "github_profile": {"title": "GitHub profile", "type": "string", "format": "uri", "maxLength": 200}, "stackoverflow_profile": {"title": "StackOverflow profile", "type": "string", "format": "uri", "maxLength": 200}, "skills": {"type": "array", "items": {"$ref": "#/definitions/Skill"}, "readOnly": true}, "followers_count": {"title": "Followers count", "type": "integer", "readOnly": true}, "following_count": {"title": "Following count", "type": "integer", "readOnly": true}, "is_following": {"title": "Is following", "type": "string", "readOnly": true}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}}}, "UserCreate": {"required": ["username", "email", "password", "confirm_password"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "username": {"title": "Username", "type": "string", "maxLength": 30, "minLength": 1}, "email": {"title": "Email address", "type": "string", "format": "email", "maxLength": 254, "minLength": 1}, "full_name": {"title": "Full name", "type": "string", "maxLength": 100}, "password": {"title": "Password", "type": "string", "minLength": 8}, "confirm_password": {"title": "Confirm password", "type": "string", "minLength": 1}}}, "TokenRefresh": {"required": ["refresh"], "type": "object", "properties": {"refresh": {"title": "Refresh", "type": "string", "minLength": 1}, "access": {"title": "Access", "type": "string", "readOnly": true, "minLength": 1}}}, "Notification": {"type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "recipient": {"title": "Recipient", "type": "integer", "readOnly": true}, "sender": {"$ref": "#/definitions/User"}, "type": {"title": "Type", "type": "string", "enum": ["like", "comment", "follow", "mention", "project_invite", "project_request", "project_accepted"], "readOnly": true}, "text": {"title": "Text", "type": "string", "readOnly": true, "minLength": 1}, "is_read": {"title": "Read", "type": "boolean"}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}, "content_type": {"title": "Content type", "type": "integer", "readOnly": true}, "object_id": {"title": "Object id", "type": "integer", "readOnly": true}}}, "NotificationSetting": {"type": "object", "properties": {"email_likes": {"title": "Email likes", "type": "boolean"}, "email_comments": {"title": "Email comments", "type": "boolean"}, "email_follows": {"title": "Email follows", "type": "boolean"}, "email_mentions": {"title": "Email mentions", "type": "boolean"}, "email_project_invites": {"title": "Email project invites", "type": "boolean"}, "email_project_requests": {"title": "Email project requests", "type": "boolean"}, "push_likes": {"title": "Push likes", "type": "boolean"}, "push_comments": {"title": "Push comments", "type": "boolean"}, "push_follows": {"title": "Push follows", "type": "boolean"}, "push_mentions": {"title": "Push mentions", "type": "boolean"}, "push_project_invites": {"title": "Push project invites", "type": "boolean"}, "push_project_requests": {"title": "Push project requests", "type": "boolean"}}}, "ProgrammingLanguage": {"required": ["name"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "name": {"title": "Name", "type": "string", "maxLength": 50, "minLength": 1}, "icon": {"title": "Icon", "type": "string", "readOnly": true, "x-nullable": true, "format": "uri"}}}, "Post": {"required": ["content"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "author": {"$ref": "#/definitions/User"}, "content": {"title": "Content", "type": "string", "minLength": 1}, "code_snippet": {"title": "Code snippet", "type": "string", "x-nullable": true}, "programming_language": {"$ref": "#/definitions/ProgrammingLanguage"}, "programming_language_id": {"title": "Programming language id", "type": "integer"}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}, "updated_at": {"title": "Updated at", "type": "string", "format": "date-time", "readOnly": true}, "likes_count": {"title": "Likes count", "type": "integer", "readOnly": true}, "comments_count": {"title": "Comments count", "type": "integer", "readOnly": true}, "is_liked": {"title": "Is liked", "type": "string", "readOnly": true}}}, "Comment": {"required": ["content"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "author": {"$ref": "#/definitions/User"}, "content": {"title": "Content", "type": "string", "minLength": 1}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}, "updated_at": {"title": "Updated at", "type": "string", "format": "date-time", "readOnly": true}, "likes_count": {"title": "Likes count", "type": "integer", "readOnly": true}, "is_liked": {"title": "Is liked", "type": "string", "readOnly": true}}}, "Project": {"required": ["title", "description", "tech_stack_ids"], "type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "creator": {"$ref": "#/definitions/User"}, "title": {"title": "Title", "type": "string", "maxLength": 100, "minLength": 1}, "description": {"title": "Description", "type": "string", "minLength": 1}, "repo_url": {"title": "Repository URL", "type": "string", "format": "uri", "maxLength": 200}, "tech_stack": {"type": "array", "items": {"$ref": "#/definitions/Skill"}, "readOnly": true}, "tech_stack_ids": {"type": "array", "items": {"type": "integer"}, "uniqueItems": true}, "status": {"title": "Status", "type": "string", "enum": ["active", "completed", "on_hold"]}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}, "updated_at": {"title": "Updated at", "type": "string", "format": "date-time", "readOnly": true}, "collaborators_count": {"title": "Collaborators count", "type": "integer", "readOnly": true}, "is_collaborator": {"title": "Is collaborator", "type": "string", "readOnly": true}}}, "CollaborationRequest": {"type": "object", "properties": {"id": {"title": "ID", "type": "integer", "readOnly": true}, "user": {"$ref": "#/definitions/User"}, "project": {"title": "Project", "type": "integer", "readOnly": true}, "message": {"title": "Message", "type": "string"}, "status": {"title": "Status", "type": "string", "enum": ["pending", "approved", "rejected"], "readOnly": true}, "created_at": {"title": "Created at", "type": "string", "format": "date-time", "readOnly": true}}}}}
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Socialistic API",
+    "description": "API documentation for the Socialistic developer social network",
+    "termsOfService": "https://www.google.com/policies/terms/",
+    "contact": {
+      "email": "contact@socialistic.local"
+    },
+    "license": {
+      "name": "BSD License"
+    },
+    "version": "v1"
+  },
+  "host": "localhost:8050",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "Basic": []
+    }
+  ],
+  "paths": {
+    "/auth/login/": {
+      "post": {
+        "operationId": "auth_login_create",
+        "description": "Custom JWT token view that returns user data with tokens.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TokenObtainPair"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/TokenObtainPair"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "parameters": []
+    },
+    "/auth/logout/": {
+      "post": {
+        "operationId": "auth_logout_create",
+        "description": "API endpoint for logout - blacklist the JWT token.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "parameters": []
+    },
+    "/auth/me/": {
+      "get": {
+        "operationId": "auth_me_read",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "put": {
+        "operationId": "auth_me_update",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "patch": {
+        "operationId": "auth_me_partial_update",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "parameters": []
+    },
+    "/auth/register/": {
+      "post": {
+        "operationId": "auth_register_create",
+        "description": "API endpoint for user registration.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserCreate"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "parameters": []
+    },
+    "/auth/token/refresh/": {
+      "post": {
+        "operationId": "auth_token_refresh_create",
+        "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TokenRefresh"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/TokenRefresh"
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "parameters": []
+    },
+    "/notifications/": {
+      "get": {
+        "operationId": "notifications_list",
+        "description": "API endpoint for listing and creating user notifications.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Notification"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "post": {
+        "operationId": "notifications_create",
+        "description": "API endpoint for listing and creating user notifications.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": []
+    },
+    "/notifications/mark-all-read/": {
+      "post": {
+        "operationId": "notifications_mark-all-read_create",
+        "description": "API endpoint for marking all notifications as read.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": []
+    },
+    "/notifications/settings/": {
+      "get": {
+        "operationId": "notifications_settings_read",
+        "description": "API endpoint for retrieving and updating notification settings.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/NotificationSetting"
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "put": {
+        "operationId": "notifications_settings_update",
+        "description": "API endpoint for retrieving and updating notification settings.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NotificationSetting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/NotificationSetting"
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "patch": {
+        "operationId": "notifications_settings_partial_update",
+        "description": "API endpoint for retrieving and updating notification settings.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NotificationSetting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/NotificationSetting"
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": []
+    },
+    "/notifications/unread-count/": {
+      "get": {
+        "operationId": "notifications_unread-count_list",
+        "description": "API endpoint for getting the count of unread notifications.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": []
+    },
+    "/notifications/{id}/": {
+      "delete": {
+        "operationId": "notifications_delete",
+        "description": "API endpoint for deleting a notification.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/notifications/{id}/read/": {
+      "post": {
+        "operationId": "notifications_read_create",
+        "description": "API endpoint for marking a notification as read.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "notifications"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/posts/": {
+      "get": {
+        "operationId": "posts_list",
+        "description": "API endpoint for listing and creating posts.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The pagination cursor value.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Post"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "post": {
+        "operationId": "posts_create",
+        "description": "API endpoint for listing and creating posts.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": []
+    },
+    "/posts/comments/{id}/": {
+      "get": {
+        "operationId": "posts_comments_read",
+        "description": "API endpoint for retrieving, updating, and deleting a comment.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "put": {
+        "operationId": "posts_comments_update",
+        "description": "API endpoint for retrieving, updating, and deleting a comment.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "patch": {
+        "operationId": "posts_comments_partial_update",
+        "description": "API endpoint for retrieving, updating, and deleting a comment.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "delete": {
+        "operationId": "posts_comments_delete",
+        "description": "API endpoint for retrieving, updating, and deleting a comment.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this comment.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/posts/comments/{id}/like/": {
+      "post": {
+        "operationId": "posts_comments_like_create",
+        "description": "API endpoint for liking/unliking a comment.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "delete": {
+        "operationId": "posts_comments_like_delete",
+        "description": "API endpoint for liking/unliking a comment.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/posts/search/": {
+      "get": {
+        "operationId": "posts_search_list",
+        "description": "API endpoint for searching posts.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Post"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": []
+    },
+    "/posts/{id}/": {
+      "get": {
+        "operationId": "posts_read",
+        "description": "API endpoint for retrieving, updating, and deleting a post.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "put": {
+        "operationId": "posts_update",
+        "description": "API endpoint for retrieving, updating, and deleting a post.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "patch": {
+        "operationId": "posts_partial_update",
+        "description": "API endpoint for retrieving, updating, and deleting a post.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "delete": {
+        "operationId": "posts_delete",
+        "description": "API endpoint for retrieving, updating, and deleting a post.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this post.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/posts/{id}/comments/": {
+      "get": {
+        "operationId": "posts_comments_list",
+        "description": "API endpoint for listing and creating comments on a post.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The pagination cursor value.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "post": {
+        "operationId": "posts_comments_create",
+        "description": "API endpoint for listing and creating comments on a post.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/posts/{id}/like/": {
+      "post": {
+        "operationId": "posts_like_create",
+        "description": "API endpoint for liking a post.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/posts/{id}/unlike/": {
+      "delete": {
+        "operationId": "posts_unlike_delete",
+        "description": "API endpoint for unliking a post.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/posts/{post_id}/comments/": {
+      "get": {
+        "operationId": "posts_comments_list",
+        "description": "API endpoint for listing and creating comments on a post.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The pagination cursor value.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "post": {
+        "operationId": "posts_comments_create",
+        "description": "API endpoint for listing and creating comments on a post.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        },
+        "tags": [
+          "posts"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "post_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/programming-languages/": {
+      "get": {
+        "operationId": "programming-languages_list",
+        "description": "API endpoint to list all programming languages.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ProgrammingLanguage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "programming-languages"
+        ]
+      },
+      "parameters": []
+    },
+    "/projects/": {
+      "get": {
+        "operationId": "projects_list",
+        "description": "API endpoint for listing and creating projects.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Project"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "post": {
+        "operationId": "projects_create",
+        "description": "API endpoint for listing and creating projects.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": []
+    },
+    "/projects/collaboration-requests/": {
+      "get": {
+        "operationId": "projects_collaboration-requests_list",
+        "description": "API endpoint for listing collaboration requests for projects created by the user.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CollaborationRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": []
+    },
+    "/projects/collaboration-requests/{id}/respond/": {
+      "post": {
+        "operationId": "projects_collaboration-requests_respond_create",
+        "description": "API endpoint for responding to a collaboration request.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/projects/{id}/": {
+      "get": {
+        "operationId": "projects_read",
+        "description": "API endpoint for retrieving, updating, and deleting a project.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "put": {
+        "operationId": "projects_update",
+        "description": "API endpoint for retrieving, updating, and deleting a project.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "patch": {
+        "operationId": "projects_partial_update",
+        "description": "API endpoint for retrieving, updating, and deleting a project.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "delete": {
+        "operationId": "projects_delete",
+        "description": "API endpoint for retrieving, updating, and deleting a project.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this project.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/projects/{id}/collaborate/": {
+      "post": {
+        "operationId": "projects_collaborate_create",
+        "description": "API endpoint for requesting to collaborate on a project.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/projects/{id}/leave/": {
+      "delete": {
+        "operationId": "projects_leave_delete",
+        "description": "API endpoint for leaving a project.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/search/posts/": {
+      "get": {
+        "operationId": "search_posts_list",
+        "description": "API endpoint for searching posts.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Post"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      },
+      "parameters": []
+    },
+    "/search/projects/": {
+      "get": {
+        "operationId": "search_projects_list",
+        "description": "API endpoint for searching projects.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "A search term.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Project"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      },
+      "parameters": []
+    },
+    "/search/users/": {
+      "get": {
+        "operationId": "search_users_list",
+        "description": "API endpoint for searching users.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "A search term.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      },
+      "parameters": []
+    },
+    "/users/": {
+      "get": {
+        "operationId": "users_list",
+        "description": "API endpoint for listing users.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": []
+    },
+    "/users/me/": {
+      "get": {
+        "operationId": "users_me_read",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "put": {
+        "operationId": "users_me_update",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "users_me_partial_update",
+        "description": "API endpoint to get or update the authenticated user.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": []
+    },
+    "/users/{id}/": {
+      "get": {
+        "operationId": "users_read",
+        "description": "API endpoint for retrieving a user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this user.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/users/{id}/follow/": {
+      "post": {
+        "operationId": "users_follow_create",
+        "description": "API endpoint for following a user.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/{id}/followers/": {
+      "get": {
+        "operationId": "users_followers_list",
+        "description": "API endpoint for listing a user's followers.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/{id}/following/": {
+      "get": {
+        "operationId": "users_following_list",
+        "description": "API endpoint for listing users that a user is following.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/{id}/posts/": {
+      "get": {
+        "operationId": "users_posts_list",
+        "description": "API endpoint for listing a user's posts.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Post"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/{id}/projects/": {
+      "get": {
+        "operationId": "users_projects_list",
+        "description": "API endpoint for listing a user's projects.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Project"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/{id}/unfollow/": {
+      "delete": {
+        "operationId": "users_unfollow_delete",
+        "description": "API endpoint for unfollowing a user.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "TokenObtainPair": {
+      "required": [
+        "email",
+        "password"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Skill": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "category": {
+          "title": "Category",
+          "type": "string",
+          "enum": [
+            "frontend",
+            "backend",
+            "mobile",
+            "devops",
+            "data",
+            "design",
+            "other"
+          ]
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "username": {
+          "title": "Username",
+          "type": "string",
+          "maxLength": 30,
+          "minLength": 1
+        },
+        "email": {
+          "title": "Email address",
+          "type": "string",
+          "format": "email",
+          "readOnly": true,
+          "minLength": 1
+        },
+        "full_name": {
+          "title": "Full name",
+          "type": "string",
+          "maxLength": 100
+        },
+        "bio": {
+          "title": "Bio",
+          "type": "string"
+        },
+        "profile_image": {
+          "title": "Profile image",
+          "type": "string",
+          "readOnly": true,
+          "x-nullable": true,
+          "format": "uri"
+        },
+        "github_profile": {
+          "title": "GitHub profile",
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200
+        },
+        "stackoverflow_profile": {
+          "title": "StackOverflow profile",
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Skill"
+          },
+          "readOnly": true
+        },
+        "followers_count": {
+          "title": "Followers count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "following_count": {
+          "title": "Following count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "is_following": {
+          "title": "Is following",
+          "type": "string",
+          "readOnly": true
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "UserCreate": {
+      "required": [
+        "username",
+        "email",
+        "password",
+        "confirm_password"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "username": {
+          "title": "Username",
+          "type": "string",
+          "maxLength": 30,
+          "minLength": 1
+        },
+        "email": {
+          "title": "Email address",
+          "type": "string",
+          "format": "email",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        "full_name": {
+          "title": "Full name",
+          "type": "string",
+          "maxLength": 100
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "minLength": 8
+        },
+        "confirm_password": {
+          "title": "Confirm password",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "TokenRefresh": {
+      "required": [
+        "refresh"
+      ],
+      "type": "object",
+      "properties": {
+        "refresh": {
+          "title": "Refresh",
+          "type": "string",
+          "minLength": 1
+        },
+        "access": {
+          "title": "Access",
+          "type": "string",
+          "readOnly": true,
+          "minLength": 1
+        }
+      }
+    },
+    "Notification": {
+      "required": [
+        "recipient",
+        "type",
+        "text",
+        "content_type",
+        "object_id"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "recipient": {
+          "title": "Recipient",
+          "type": "integer"
+        },
+        "sender": {
+          "$ref": "#/definitions/User"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string",
+          "enum": [
+            "like",
+            "comment",
+            "follow",
+            "mention",
+            "project_invite",
+            "project_request",
+            "project_accepted"
+          ]
+        },
+        "text": {
+          "title": "Text",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "is_read": {
+          "title": "Read",
+          "type": "boolean"
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "content_type": {
+          "title": "Content type",
+          "type": "integer"
+        },
+        "object_id": {
+          "title": "Object id",
+          "type": "integer"
+        }
+      }
+    },
+    "NotificationSetting": {
+      "type": "object",
+      "properties": {
+        "email_likes": {
+          "title": "Email likes",
+          "type": "boolean"
+        },
+        "email_comments": {
+          "title": "Email comments",
+          "type": "boolean"
+        },
+        "email_follows": {
+          "title": "Email follows",
+          "type": "boolean"
+        },
+        "email_mentions": {
+          "title": "Email mentions",
+          "type": "boolean"
+        },
+        "email_project_invites": {
+          "title": "Email project invites",
+          "type": "boolean"
+        },
+        "email_project_requests": {
+          "title": "Email project requests",
+          "type": "boolean"
+        },
+        "push_likes": {
+          "title": "Push likes",
+          "type": "boolean"
+        },
+        "push_comments": {
+          "title": "Push comments",
+          "type": "boolean"
+        },
+        "push_follows": {
+          "title": "Push follows",
+          "type": "boolean"
+        },
+        "push_mentions": {
+          "title": "Push mentions",
+          "type": "boolean"
+        },
+        "push_project_invites": {
+          "title": "Push project invites",
+          "type": "boolean"
+        },
+        "push_project_requests": {
+          "title": "Push project requests",
+          "type": "boolean"
+        }
+      }
+    },
+    "ProgrammingLanguage": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "icon": {
+          "title": "Icon",
+          "type": "string",
+          "readOnly": true,
+          "x-nullable": true,
+          "format": "uri"
+        }
+      }
+    },
+    "Post": {
+      "required": [
+        "content"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string",
+          "minLength": 1
+        },
+        "code_snippet": {
+          "title": "Code snippet",
+          "type": "string",
+          "x-nullable": true
+        },
+        "programming_language": {
+          "$ref": "#/definitions/ProgrammingLanguage"
+        },
+        "programming_language_id": {
+          "title": "Programming language id",
+          "type": "integer"
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "likes_count": {
+          "title": "Likes count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "comments_count": {
+          "title": "Comments count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "is_liked": {
+          "title": "Is liked",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "Comment": {
+      "required": [
+        "content"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "likes_count": {
+          "title": "Likes count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "is_liked": {
+          "title": "Is liked",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "ProjectCollaborator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string",
+          "enum": [
+            "owner",
+            "contributor",
+            "viewer"
+          ]
+        },
+        "joined_at": {
+          "title": "Joined at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "Project": {
+      "required": [
+        "title",
+        "description",
+        "tech_stack_ids"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "description": {
+          "title": "Description",
+          "type": "string",
+          "minLength": 1
+        },
+        "repo_url": {
+          "title": "Repository URL",
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200
+        },
+        "tech_stack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Skill"
+          },
+          "readOnly": true
+        },
+        "tech_stack_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "uniqueItems": true
+        },
+        "status": {
+          "title": "Status",
+          "type": "string",
+          "enum": [
+            "active",
+            "completed",
+            "on_hold"
+          ]
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "collaborators_count": {
+          "title": "Collaborators count",
+          "type": "integer",
+          "readOnly": true
+        },
+        "is_collaborator": {
+          "title": "Is collaborator",
+          "type": "string",
+          "readOnly": true
+        },
+        "collaborators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProjectCollaborator"
+          },
+          "readOnly": true
+        }
+      }
+    },
+    "CollaborationRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "user_id": {
+          "title": "User id",
+          "type": "integer",
+          "readOnly": true
+        },
+        "project": {
+          "title": "Project",
+          "type": "integer",
+          "readOnly": true
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ],
+          "readOnly": true
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

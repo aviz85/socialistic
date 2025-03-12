@@ -16,7 +16,7 @@ class TestAuthorizationSecurity:
             reverse('user-me'),
             reverse('user-followers', kwargs={'pk': 1}),
             reverse('user-following', kwargs={'pk': 1}),
-            reverse('post-list-create'),  # POST method requires authentication
+            reverse('post-list'),  # POST method requires authentication
             reverse('notification-list'),
             reverse('project-list'),  # POST method requires authentication
         ]

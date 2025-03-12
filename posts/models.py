@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from users.models import ProgrammingLanguage
+from django.core.exceptions import ValidationError
 
 
 class Post(models.Model):
@@ -26,7 +27,13 @@ class Post(models.Model):
     )
     
     def __str__(self):
-        return f"{self.author.username}'s post: {self.content[:30]}..."
+        return f"Post by {self.author.username}: {self.content[:30]}"
+    
+    def clean(self):
+        """Validate that a post has either content or code_snippet."""
+        if not self.content and not self.code_snippet:
+            raise ValidationError(_('A post must have either content or code snippet.'))
+        super().clean()
     
     @property
     def likes_count(self):
@@ -55,7 +62,13 @@ class Comment(models.Model):
     )
     
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.post}"
+        return f"Comment by {self.author.username} on post {self.post.id}: {self.content[:30]}"
+    
+    def clean(self):
+        """Validate that a comment has content."""
+        if not self.content:
+            raise ValidationError(_('A comment must have content.'))
+        super().clean()
     
     @property
     def likes_count(self):
@@ -76,7 +89,7 @@ class PostLike(models.Model):
         unique_together = ('user', 'post')
         
     def __str__(self):
-        return f"{self.user.username} likes {self.post}"
+        return f"{self.user.username} likes post {self.post.id}"
 
 
 class CommentLike(models.Model):

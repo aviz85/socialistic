@@ -173,7 +173,6 @@ class TestNotificationDeleteAPI:
 class TestNotificationSettingAPI:
     """Tests for notification settings."""
     
-    @pytest.mark.skip("Notification settings endpoint needs to be checked")
     @pytest.mark.api
     @pytest.mark.integration
     def test_update_notification_settings(self, auth_client, user):
@@ -181,22 +180,38 @@ class TestNotificationSettingAPI:
         url = reverse('notification-settings')
         
         data = {
-            'email_notifications': False,
-            'browser_notifications': True
+            'email_likes': False,
+            'email_comments': False,
+            'email_follows': True,
+            'email_mentions': True,
+            'email_project_invites': True,
+            'email_project_requests': True,
+            'push_likes': True,
+            'push_comments': True,
+            'push_follows': True,
+            'push_mentions': True,
+            'push_project_invites': True,
+            'push_project_requests': True
         }
         
-        response = auth_client.patch(url, data)
+        response = auth_client.put(url, data)
         
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['email_notifications'] == False
-        assert response.data['browser_notifications'] == True
+        assert response.data['email_likes'] == False
+        assert response.data['email_comments'] == False
+        assert response.data['email_follows'] == True
         
-        # Check that the settings were updated in the database
-        user.refresh_from_db()
-        assert user.notification_settings.email_notifications == False
-        assert user.notification_settings.browser_notifications == True
+        # Test partial update with PATCH
+        partial_data = {
+            'email_likes': True
+        }
+        
+        response = auth_client.patch(url, partial_data)
+        
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['email_likes'] == True
+        assert response.data['email_comments'] == False  # Unchanged from previous update
 
-    @pytest.mark.skip("Notification settings endpoint needs to be checked")
     @pytest.mark.api
     @pytest.mark.integration
     def test_update_notification_settings_without_authentication(self, api_client):
@@ -204,13 +219,30 @@ class TestNotificationSettingAPI:
         url = reverse('notification-settings')
         
         data = {
-            'email_notifications': False,
-            'browser_notifications': True
+            'email_likes': False,
+            'email_comments': False,
+            'email_follows': True
         }
         
-        response = api_client.patch(url, data)
+        response = api_client.put(url, data)
         
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_get_notification_settings(self, auth_client, user):
+        """Test retrieving notification settings."""
+        url = reverse('notification-settings')
+        
+        response = auth_client.get(url)
+        
+        assert response.status_code == status.HTTP_200_OK
+        assert 'email_likes' in response.data
+        assert 'email_comments' in response.data
+        assert 'email_follows' in response.data
+        assert 'push_likes' in response.data
+        assert 'push_comments' in response.data
+        assert 'push_follows' in response.data
 
 
 class TestNotificationCountAPI:

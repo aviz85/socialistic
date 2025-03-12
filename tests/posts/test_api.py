@@ -182,73 +182,73 @@ class TestCommentAPI:
     @pytest.mark.api
     @pytest.mark.integration
     def test_list_post_comments(self, auth_client, user, post):
-        """Test listing comments for a post."""
+        """Test listing comments on a post."""
         # Create some comments
-        comment1 = CommentFactory(author=user, post=post)
-        comment2 = CommentFactory(author=user, post=post)
+        for i in range(3):
+            Comment.objects.create(author=user, post=post, content=f"Test comment {i}")
         
         url = reverse('post-comments', kwargs={'pk': post.id})
+        
         response = auth_client.get(url)
         
         assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 2 or len(response.data['results']) == 2  # Handle pagination
-        
-        # If response has pagination
-        comments_data = response.data['results'] if 'results' in response.data else response.data
-        
-        # Check that both comments are in the response
-        comment_ids = [comment['id'] for comment in comments_data]
-        assert comment1.id in comment_ids
-        assert comment2.id in comment_ids
-
+        assert len(response.data['results']) == 3
+        assert 'next' in response.data
+        assert 'previous' in response.data
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_create_comment(self, auth_client, user, post):
-        """Test creating a comment."""
+        """Test creating a comment on a post."""
         url = reverse('post-comments', kwargs={'pk': post.id})
+        
         data = {
-            'content': 'Test comment'
+            'content': 'Test comment content'
         }
         
         response = auth_client.post(url, data)
         
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['content'] == 'Test comment'
+        assert response.data['content'] == 'Test comment content'
         assert response.data['author']['id'] == user.id
         
-        # Post ID check is omitted since it might not be in the response payload
-        # The important thing is that we can retrieve the comment from the database
-        comment = Comment.objects.get(id=response.data['id'])
-        assert comment.content == 'Test comment'
+        # Check that the comment was created in the database
+        comment = Comment.objects.get(content='Test comment content')
         assert comment.author == user
         assert comment.post == post
-
+        
+        # Check that the post's comments_count was incremented
+        post.refresh_from_db()
+        assert post.comments_count == 1
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_create_comment_without_authentication(self, api_client, post):
-        """Test that an unauthenticated user cannot create a comment."""
+        """Test that anonymous users cannot create comments."""
         url = reverse('post-comments', kwargs={'pk': post.id})
+        
         data = {
-            'content': 'Test comment'
+            'content': 'Test comment content'
         }
         
         response = api_client.post(url, data)
         
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    @pytest.mark.skip("Comment detail endpoint not implemented yet")
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_update_own_comment(self, auth_client, user, post):
-        """Test updating own comment."""
-        comment = CommentFactory(author=user, post=post)
+        """Test updating your own comment."""
+        # Create a comment
+        comment = Comment.objects.create(author=user, post=post, content='Original comment content')
         
         url = reverse('comment-detail', kwargs={'pk': comment.id})
+        
         data = {
             'content': 'Updated comment content'
         }
         
-        response = auth_client.patch(url, data)
+        response = auth_client.put(url, data)
         
         assert response.status_code == status.HTTP_200_OK
         assert response.data['content'] == 'Updated comment content'
@@ -256,49 +256,63 @@ class TestCommentAPI:
         # Check that the comment was updated in the database
         comment.refresh_from_db()
         assert comment.content == 'Updated comment content'
-
-    @pytest.mark.skip("Comment detail endpoint not implemented yet")
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_cannot_update_other_user_comment(self, auth_client, another_user, post):
-        """Test that a user cannot update another user's comment."""
-        comment = CommentFactory(author=another_user, post=post)
+        """Test that users cannot update other users' comments."""
+        # Create a comment by another user
+        comment = Comment.objects.create(author=another_user, post=post, content='Original comment content')
         
         url = reverse('comment-detail', kwargs={'pk': comment.id})
+        
         data = {
             'content': 'Updated comment content'
         }
         
-        response = auth_client.patch(url, data)
+        response = auth_client.put(url, data)
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    @pytest.mark.skip("Comment detail endpoint not implemented yet")
+        
+        # Check that the comment was not updated in the database
+        comment.refresh_from_db()
+        assert comment.content == 'Original comment content'
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_delete_own_comment(self, auth_client, user, post):
-        """Test deleting own comment."""
-        comment = CommentFactory(author=user, post=post)
+        """Test deleting your own comment."""
+        # Create a comment
+        comment = Comment.objects.create(author=user, post=post, content='Test comment content')
         
         url = reverse('comment-detail', kwargs={'pk': comment.id})
+        
         response = auth_client.delete(url)
         
         assert response.status_code == status.HTTP_204_NO_CONTENT
         
         # Check that the comment was deleted from the database
         assert not Comment.objects.filter(id=comment.id).exists()
-
-    @pytest.mark.skip("Comment detail endpoint not implemented yet")
+        
+        # Check that the post's comments_count was decremented
+        post.refresh_from_db()
+        assert post.comments_count == 0
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_cannot_delete_other_user_comment(self, auth_client, another_user, post):
-        """Test that a user cannot delete another user's comment."""
-        comment = CommentFactory(author=another_user, post=post)
+        """Test that users cannot delete other users' comments."""
+        # Create a comment by another user
+        comment = Comment.objects.create(author=another_user, post=post, content='Test comment content')
         
         url = reverse('comment-detail', kwargs={'pk': comment.id})
+        
         response = auth_client.delete(url)
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
+        
+        # Check that the comment was not deleted from the database
+        assert Comment.objects.filter(id=comment.id).exists()
 
 
 class TestPostLikeAPI:
@@ -355,12 +369,11 @@ class TestPostLikeAPI:
 class TestCommentLikeAPI:
     """Tests for comment like API."""
     
-    @pytest.mark.skip("Comment like endpoint not implemented yet")
     @pytest.mark.api
     @pytest.mark.integration
     def test_like_comment(self, auth_client, user, comment):
         """Test liking a comment."""
-        url = reverse('comment-like', kwargs={'comment_id': comment.id})
+        url = reverse('comment-like', kwargs={'pk': comment.id})
         
         response = auth_client.post(url)
         
@@ -372,8 +385,7 @@ class TestCommentLikeAPI:
         # Check that the comment's likes_count was incremented
         comment.refresh_from_db()
         assert comment.likes_count == 1
-
-    @pytest.mark.skip("Comment like endpoint not implemented yet")
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_unlike_comment(self, auth_client, user, comment):
@@ -381,7 +393,7 @@ class TestCommentLikeAPI:
         # Create like
         CommentLike.objects.create(user=user, comment=comment)
         
-        url = reverse('comment-unlike', kwargs={'comment_id': comment.id})
+        url = reverse('comment-like', kwargs={'pk': comment.id})
         
         response = auth_client.delete(url)
         
@@ -393,13 +405,12 @@ class TestCommentLikeAPI:
         # Check that the comment's likes_count was decremented
         comment.refresh_from_db()
         assert comment.likes_count == 0
-
-    @pytest.mark.skip("Comment like endpoint not implemented yet")
+    
     @pytest.mark.api
     @pytest.mark.integration
     def test_like_comment_without_authentication(self, api_client, comment):
-        """Test that an unauthenticated user cannot like a comment."""
-        url = reverse('comment-like', kwargs={'comment_id': comment.id})
+        """Test that anonymous users cannot like comments."""
+        url = reverse('comment-like', kwargs={'pk': comment.id})
         
         response = api_client.post(url)
         

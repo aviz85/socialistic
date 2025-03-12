@@ -21,16 +21,23 @@ class TestFollowNotification:
         assert Notification.objects.filter(
             recipient=another_user,
             sender=user,
-            notification_type='follow'
+            type='follow'
         ).exists()
 
 
 class TestCommentNotification:
     """Test notifications for comment actions."""
     
-    def test_comment_creates_notification(self, auth_client, user, post):
+    def test_comment_creates_notification(self, auth_client, user, another_user):
         """Test that commenting on a post creates a notification."""
-        # Comment on a post
+        # Create a post by another user
+        from posts.models import Post
+        post = Post.objects.create(
+            author=another_user,
+            content="Test post by another user"
+        )
+        
+        # Comment on the post
         url = reverse('post-comments', kwargs={'pk': post.id})
         data = {
             'content': 'Test comment'
@@ -42,18 +49,25 @@ class TestCommentNotification:
         
         # Check that a notification was created for the post author
         assert Notification.objects.filter(
-            recipient=post.author,
+            recipient=another_user,
             sender=user,
-            notification_type='comment'
+            type='comment'
         ).exists()
 
 
 class TestLikeNotification:
     """Test notifications for like actions."""
     
-    def test_post_like_creates_notification(self, auth_client, user, post):
+    def test_post_like_creates_notification(self, auth_client, user, another_user):
         """Test that liking a post creates a notification."""
-        # Like a post
+        # Create a post by another user
+        from posts.models import Post
+        post = Post.objects.create(
+            author=another_user,
+            content="Test post by another user"
+        )
+        
+        # Like the post
         url = reverse('post-like', kwargs={'pk': post.id})
         response = auth_client.post(url)
         
@@ -61,16 +75,16 @@ class TestLikeNotification:
         
         # Check that a notification was created for the post author
         assert Notification.objects.filter(
-            recipient=post.author,
+            recipient=another_user,
             sender=user,
-            notification_type='post_like'
+            type='like'
         ).exists()
 
     @pytest.mark.skip("Comment like endpoint not implemented yet")
     def test_comment_like_creates_notification(self, auth_client, user, comment):
         """Test that liking a comment creates a notification."""
-        # Like a comment
-        url = reverse('comment-like', kwargs={'comment_id': comment.id})
+        # Like the comment
+        url = reverse('comment-like', kwargs={'pk': comment.id})
         response = auth_client.post(url)
         
         assert response.status_code == status.HTTP_201_CREATED
@@ -79,7 +93,7 @@ class TestLikeNotification:
         assert Notification.objects.filter(
             recipient=comment.author,
             sender=user,
-            notification_type='comment_like'
+            type='comment_like'
         ).exists()
 
 
@@ -110,7 +124,7 @@ class TestProjectNotification:
         assert Notification.objects.filter(
             recipient=another_user,
             sender=user,
-            notification_type='collaboration_request'
+            type='project_request'
         ).exists()
 
     def test_collaboration_accepted_creates_notification(self, auth_client, user, another_user):
@@ -144,5 +158,5 @@ class TestProjectNotification:
         assert Notification.objects.filter(
             recipient=another_user,
             sender=user,
-            notification_type='collaboration_accepted'
+            type='project_accepted'
         ).exists() 
