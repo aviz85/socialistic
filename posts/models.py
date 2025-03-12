@@ -9,7 +9,7 @@ class Post(models.Model):
     
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='posts', on_delete=models.CASCADE)
     content = models.TextField(_('content'))
-    code_snippet = models.TextField(_('code snippet'), blank=True)
+    code_snippet = models.TextField(_('code snippet'), blank=True, null=True)
     programming_language = models.ForeignKey(
         ProgrammingLanguage, 
         related_name='posts',

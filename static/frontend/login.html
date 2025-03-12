@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סושיאליסטיק - התחברות והרשמה</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f9fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .info {
+            flex: 1;
+            background-color: #3b82f6;
+            color: white;
+            padding: 40px;
+        }
+        .info h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        .info p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .forms {
+            flex: 1;
+            padding: 40px;
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .tab-btn.active {
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3b82f6;
+        }
+        form {
+            display: none;
+        }
+        form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+        .success-message {
+            color: #10b981;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info">
+            <h1>ברוכים הבאים לסושיאליסטיק</h1>
+            <p>רשת חברתית למפתחים ישראליים</p>
+            <p>שתפו קטעי קוד, תמצאו שותפים לפרויקטים ותתחברו עם מפתחים אחרים</p>
+        </div>
+        <div class="forms">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-form="login-form">התחברות</button>
+                <button class="tab-btn" data-form="register-form">הרשמה</button>
+            </div>
+            
+            <form id="login-form" class="active">
+                <div class="form-group">
+                    <label for="login-email">דוא"ל</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">סיסמה</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="error-message" id="login-error"></div>
+                <button type="submit">התחברות</button>
+            </form>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">שם משתמש</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">דוא"ל</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-full-name">שם מלא</label>
+                    <input type="text" id="register-full-name">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">סיסמה</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">אימות סיסמה</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                <div class="error-message" id="register-error"></div>
+                <div class="success-message" id="register-success"></div>
+                <button type="submit">הרשמה</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // החלפת טאבים בין התחברות להרשמה
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const forms = document.querySelectorAll('form');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const formId = button.dataset.form;
+                
+                // הסרת הקלאס אקטיבי מכל הכפתורים והטפסים
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                forms.forEach(form => form.classList.remove('active'));
+                
+                // הוספת הקלאס אקטיבי לכפתור ולטופס הנבחרים
+                button.classList.add('active');
+                document.getElementById(formId).classList.add('active');
+            });
+        });
+
+        // טיפול בטופס התחברות
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            try {
+                const response = await fetch('/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || 'נכשל בהתחברות');
+                }
+                
+                // אחסון הטוקן ב-localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // מעבר לדף הראשי
+                window.location.href = '/static/frontend/feed.html';
+            } catch (error) {
+                errorElement.textContent = error.message;
+            }
+        });
+
+        // טיפול בטופס הרשמה
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const fullName = document.getElementById('register-full-name').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            const errorElement = document.getElementById('register-error');
+            const successElement = document.getElementById('register-success');
+            
+            // ניקוי הודעות קודמות
+            errorElement.textContent = '';
+            successElement.textContent = '';
+            
+            // וידוא שהסיסמאות תואמות
+            if (password !== confirmPassword) {
+                errorElement.textContent = 'הסיסמאות אינן תואמות';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        full_name: fullName,
+                        password,
+                        confirm_password: confirmPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    let errorMsg = 'נכשל ברישום';
+                    if (data.email) errorMsg = `אימייל: ${data.email}`;
+                    if (data.username) errorMsg = `שם משתמש: ${data.username}`;
+                    if (data.non_field_errors) errorMsg = data.non_field_errors[0];
+                    throw new Error(errorMsg);
+                }
+                
+                // מעבר לטופס ההתחברות לאחר הרשמה מוצלחת
+                successElement.textContent = 'נרשמת בהצלחה! כעת ניתן להתחבר';
+                document.getElementById('register-form').reset();
+                
+                // החלפה לטאב ההתחברות לאחר שניה
+                setTimeout(() => {
+                    document.querySelector('.tab-btn[data-form="login-form"]').click();
+                }, 2000);
+                
+            } catch (error) {
+                errorElement.textContent = error.message;
+            }
+        });
+    </script>
+</body>
+</html> 

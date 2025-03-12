@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.views.generic import RedirectView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -49,8 +50,17 @@ urlpatterns = [
     path('api/projects/', include('projects.urls')),
     path('api/notifications/', include('notifications.urls')),
     path('api/search/', include('socialistic.urls_search')),
+    path('api/programming-languages/', include('posts.urls_programming_languages')),
+    
+    # Frontend
+    path('', RedirectView.as_view(url='/static/frontend/login.html'), name='home'),
 ]
 
 # Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    
+    # Serve files from STATICFILES_DIRS for development
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()

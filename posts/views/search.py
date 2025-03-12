@@ -1,34 +1,24 @@
-from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, permissions
 from posts.models import Post
 from posts.serializers import PostSerializer
-from users.models import ProgrammingLanguage
-
+from django.db.models import Q
 
 class PostSearchView(generics.ListAPIView):
     """
     API endpoint for searching posts.
     """
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['content', 'code_snippet']
+    permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
         queryset = Post.objects.all()
+        query = self.request.query_params.get('q', None)
         
-        # Filter by programming language if provided
-        language_id = self.request.query_params.get('language')
-        if language_id:
-            try:
-                language = ProgrammingLanguage.objects.get(id=language_id)
-                queryset = queryset.filter(programming_language=language)
-            except ProgrammingLanguage.DoesNotExist:
-                pass
-        
-        # Filter by has_code if provided
-        has_code = self.request.query_params.get('has_code')
-        if has_code == 'true':
-            queryset = queryset.exclude(code_snippet='')
+        if query:
+            queryset = queryset.filter(
+                Q(content__icontains=query) |
+                Q(code_snippet__icontains=query) |
+                Q(author__username__icontains=query)
+            )
         
         return queryset 

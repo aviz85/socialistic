@@ -13,6 +13,8 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class ProgrammingLanguageSerializer(serializers.ModelSerializer):
+    """Serializer for programming languages."""
+    
     class Meta:
         model = ProgrammingLanguage
         fields = ['id', 'name', 'icon']

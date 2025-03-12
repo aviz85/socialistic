@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סושיאליסטיק - פרופיל</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f9fc;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .nav-link.active {
+            background-color: #e5e7eb;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .profile-header {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .profile-info h1 {
+            margin-bottom: 10px;
+        }
+        
+        .profile-details {
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .profile-bio {
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .profile-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .skill-badge {
+            background-color: #e5e7eb;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+        
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4b5563;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            display: inline-flex;
+        }
+        
+        .github-link:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .edit-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background-color: #2563eb;
+        }
+        
+        .modal-background {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            color: #10b981;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/static/frontend/feed.html" class="brand">סושיאליסטיק</a>
+        <div class="nav-links">
+            <a href="/static/frontend/feed.html" class="nav-link">פיד</a>
+            <a href="/static/frontend/profile.html" class="nav-link active">פרופיל</a>
+        </div>
+        <div class="user-menu">
+            <div class="user-avatar" id="user-avatar"></div>
+            <a href="#" id="logout-link">התנתקות</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar"></div>
+            <div class="profile-info">
+                <h1 id="profile-name">שם המשתמש</h1>
+                <div class="profile-details">
+                    <div id="profile-username">@username</div>
+                    <div id="profile-email">user@example.com</div>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-count" id="following-count">0</div>
+                        <div class="stat-label">עוקב</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-count" id="followers-count">0</div>
+                        <div class="stat-label">עוקבים</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-count" id="posts-count">0</div>
+                        <div class="stat-label">פוסטים</div>
+                    </div>
+                </div>
+                
+                <div class="profile-bio" id="profile-bio"></div>
+                
+                <button class="edit-btn" id="edit-profile-btn">ערוך פרופיל</button>
+            </div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="section-title">מיומנויות</div>
+            <div class="skills-list" id="skills-list">
+                <!-- יטען דינמית -->
+            </div>
+            
+            <div class="section-title">קישורים</div>
+            <div id="github-link"></div>
+        </div>
+    </div>
+    
+    <!-- מודאל עריכת פרופיל -->
+    <div class="modal-background" id="edit-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">עריכת פרופיל</div>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="success-message" id="edit-success" style="display: none;"></div>
+            
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label for="edit-full-name">שם מלא</label>
+                    <input type="text" id="edit-full-name" name="full_name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-bio">ביוגרפיה</label>
+                    <textarea id="edit-bio" name="bio"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-github">פרופיל GitHub</label>
+                    <input type="url" id="edit-github" name="github_profile" placeholder="https://github.com/username">
+                </div>
+                
+                <div class="error-message" id="edit-error"></div>
+                
+                <button type="submit" class="edit-btn">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // בדיקת התחברות
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/static/frontend/login.html';
+                return;
+            }
+            
+            // טעינת פרטי משתמש
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userInitials = user.username ? user.username.slice(0, 2).toUpperCase() : '';
+            document.getElementById('user-avatar').textContent = userInitials;
+            
+            // טיפול בהתנתקות
+            document.getElementById('logout-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/static/frontend/login.html';
+            });
+            
+            // טעינת פרופיל
+            loadProfile();
+            
+            // מודאל עריכת פרופיל
+            const editBtn = document.getElementById('edit-profile-btn');
+            const closeBtn = document.getElementById('close-modal');
+            const modal = document.getElementById('edit-modal');
+            
+            editBtn.addEventListener('click', () => {
+                modal.style.display = 'flex';
+                fillEditForm();
+            });
+            
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            // סגירת המודאל כשלוחצים מחוץ לו
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // טיפול בטופס עריכה
+            document.getElementById('edit-profile-form').addEventListener('submit', updateProfile);
+        });
+        
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/users/me/', {
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('לא ניתן לטעון פרופיל');
+                }
+                
+                const profile = await response.json();
+                
+                // עדכון פרטי פרופיל
+                document.getElementById('profile-avatar').textContent = profile.username.slice(0, 2).toUpperCase();
+                document.getElementById('profile-name').textContent = profile.full_name || profile.username;
+                document.getElementById('profile-username').textContent = `@${profile.username}`;
+                document.getElementById('profile-email').textContent = profile.email;
+                document.getElementById('profile-bio').textContent = profile.bio || 'אין ביוגרפיה';
+                
+                // עדכון סטטיסטיקה
+                document.getElementById('following-count').textContent = profile.following_count || 0;
+                document.getElementById('followers-count').textContent = profile.followers_count || 0;
+                document.getElementById('posts-count').textContent = profile.posts_count || 0;
+                
+                // עדכון מיומנויות
+                const skillsList = document.getElementById('skills-list');
+                skillsList.innerHTML = '';
+                
+                if (profile.skills && profile.skills.length > 0) {
+                    profile.skills.forEach(skill => {
+                        const skillElement = document.createElement('div');
+                        skillElement.className = 'skill-badge';
+                        skillElement.textContent = skill.name;
+                        skillsList.appendChild(skillElement);
+                    });
+                } else {
+                    skillsList.innerHTML = '<div>אין מיומנויות</div>';
+                }
+                
+                // עדכון קישורים
+                const githubLink = document.getElementById('github-link');
+                if (profile.github_profile) {
+                    githubLink.innerHTML = `
+                        <a href="${profile.github_profile}" target="_blank" class="github-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                            </svg>
+                            GitHub
+                        </a>
+                    `;
+                } else {
+                    githubLink.innerHTML = '<div>לא הוגדר פרופיל GitHub</div>';
+                }
+                
+            } catch (error) {
+                console.error('שגיאה בטעינת פרופיל:', error);
+            }
+        }
+        
+        function fillEditForm() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // טעינת פרטים נוכחיים לטופס
+            document.getElementById('edit-full-name').value = user.full_name || '';
+            document.getElementById('edit-bio').value = user.bio || '';
+            document.getElementById('edit-github').value = user.github_profile || '';
+            
+            // ניקוי הודעות
+            document.getElementById('edit-error').textContent = '';
+            document.getElementById('edit-success').textContent = '';
+            document.getElementById('edit-success').style.display = 'none';
+        }
+        
+        async function updateProfile(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('edit-full-name').value.trim();
+            const bio = document.getElementById('edit-bio').value.trim();
+            const githubProfile = document.getElementById('edit-github').value.trim();
+            
+            const errorElement = document.getElementById('edit-error');
+            const successElement = document.getElementById('edit-success');
+            
+            // ניקוי הודעות
+            errorElement.textContent = '';
+            successElement.textContent = '';
+            successElement.style.display = 'none';
+            
+            // נתונים לעדכון
+            const profileData = {
+                full_name: fullName,
+                bio: bio,
+                github_profile: githubProfile
+            };
+            
+            try {
+                const response = await fetch('/api/users/me/', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                if (!response.ok) {
+                    const data = await response.json();
+                    let errorMsg = 'שגיאה בעדכון פרופיל';
+                    if (data.detail) errorMsg = data.detail;
+                    throw new Error(errorMsg);
+                }
+                
+                const updatedUser = await response.json();
+                
+                // עדכון נתוני משתמש בזיכרון
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const updatedUserData = { ...user, ...updatedUser };
+                localStorage.setItem('user', JSON.stringify(updatedUserData));
+                
+                // הצגת הודעת הצלחה
+                successElement.textContent = 'הפרופיל עודכן בהצלחה!';
+                successElement.style.display = 'block';
+                
+                // טעינת פרופיל מחדש
+                loadProfile();
+                
+                // סגירת המודאל לאחר 2 שניות
+                setTimeout(() => {
+                    document.getElementById('edit-modal').style.display = 'none';
+                }, 2000);
+                
+            } catch (error) {
+                errorElement.textContent = error.message;
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -25,6 +25,11 @@ class PostListCreateView(generics.ListCreateAPIView):
         
         # In production, get posts from users the current user follows + their own posts
         following_users = self.request.user.following.values_list('following_id', flat=True)
+        
+        # If user is not following anyone, show all posts instead of empty feed
+        if not following_users:
+            return Post.objects.all()
+        
         return Post.objects.filter(author_id__in=list(following_users) + [self.request.user.id])
 
 

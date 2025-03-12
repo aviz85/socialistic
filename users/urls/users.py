@@ -3,9 +3,11 @@ from users.views.users import (
     UserListView, UserDetailView, UserPostsView, UserProjectsView,
     UserFollowView, UserUnfollowView, UserFollowersView, UserFollowingView
 )
+from users.views.auth import UserMe
 
 urlpatterns = [
     path('', UserListView.as_view(), name='user-list'),
+    path('me/', UserMe.as_view(), name='user-me'),
     path('<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('<int:pk>/posts/', UserPostsView.as_view(), name='user-posts'),
     path('<int:pk>/projects/', UserProjectsView.as_view(), name='user-projects'),
