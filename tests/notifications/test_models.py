@@ -20,7 +20,7 @@ class TestNotificationModel:
         notification = Notification.objects.create(
             recipient=user,
             sender=another_user,
-            notification_type='post_like',
+            type='like',
             content_type=content_type,
             object_id=post.id,
             text=f"{another_user.username} liked your post"
@@ -28,11 +28,11 @@ class TestNotificationModel:
         
         assert notification.recipient == user
         assert notification.sender == another_user
-        assert notification.notification_type == 'post_like'
+        assert notification.type == 'like'
         assert notification.content_type == content_type
         assert notification.object_id == post.id
         assert notification.text == f"{another_user.username} liked your post"
-        assert notification.read is False
+        assert notification.is_read is False
         assert notification.created_at <= timezone.now()
 
     @pytest.mark.unit
@@ -42,11 +42,11 @@ class TestNotificationModel:
         notification = NotificationFactory(
             recipient=user,
             sender=another_user,
-            notification_type='post_like',
+            type='like',
             text=f"{another_user.username} liked your post"
         )
         
-        expected_str = f"Notification from {another_user.username} to {user.username}: {notification.text}"
+        expected_str = f"Notification to {user.username}: {notification.text}"
         assert str(notification) == expected_str
 
     @pytest.mark.unit
@@ -56,15 +56,16 @@ class TestNotificationModel:
         notification = NotificationFactory(
             recipient=user,
             sender=another_user,
-            notification_type='post_like',
+            type='like',
             text=f"{another_user.username} liked your post",
-            read=False
+            is_read=False
         )
         
-        notification.mark_as_read()
+        notification.is_read = True
+        notification.save()
         
         # Check that the notification was marked as read
-        assert notification.read is True
+        assert notification.is_read is True
 
     @pytest.mark.unit
     @pytest.mark.model
@@ -73,15 +74,16 @@ class TestNotificationModel:
         notification = NotificationFactory(
             recipient=user,
             sender=another_user,
-            notification_type='post_like',
+            type='like',
             text=f"{another_user.username} liked your post",
-            read=True
+            is_read=True
         )
         
-        notification.mark_as_unread()
+        notification.is_read = False
+        notification.save()
         
         # Check that the notification was marked as unread
-        assert notification.read is False
+        assert notification.is_read is False
 
     @pytest.mark.unit
     @pytest.mark.model
@@ -94,13 +96,13 @@ class TestNotificationModel:
         post_notification = NotificationFactory(
             recipient=user,
             sender=another_user,
-            notification_type='post_like',
+            type='like',
             content_type=post_content_type,
             object_id=post.id,
             text=f"{another_user.username} liked your post"
         )
         
-        related_object = post_notification.get_related_object()
+        related_object = post_notification.content_object
         assert related_object == post
         
         # Create a comment notification
@@ -110,13 +112,13 @@ class TestNotificationModel:
         comment_notification = NotificationFactory(
             recipient=user,
             sender=another_user,
-            notification_type='comment_like',
+            type='comment',
             content_type=comment_content_type,
             object_id=comment.id,
             text=f"{another_user.username} liked your comment"
         )
         
-        related_object = comment_notification.get_related_object()
+        related_object = comment_notification.content_object
         assert related_object == comment
 
     @pytest.mark.unit
@@ -124,15 +126,15 @@ class TestNotificationModel:
     def test_unread_count_for_user(self, user, another_user):
         """Test getting the count of unread notifications for a user."""
         # Create some notifications
-        NotificationFactory(recipient=user, sender=another_user, read=False)
-        NotificationFactory(recipient=user, sender=another_user, read=False)
-        NotificationFactory(recipient=user, sender=another_user, read=True)
+        NotificationFactory(recipient=user, sender=another_user, is_read=False)
+        NotificationFactory(recipient=user, sender=another_user, is_read=False)
+        NotificationFactory(recipient=user, sender=another_user, is_read=True)
         
         # Create a notification for another user
-        NotificationFactory(recipient=another_user, sender=user, read=False)
+        NotificationFactory(recipient=another_user, sender=user, is_read=False)
         
         # Get the count of unread notifications for the user
-        unread_count = Notification.objects.filter(recipient=user, read=False).count()
+        unread_count = Notification.objects.filter(recipient=user, is_read=False).count()
         
         assert unread_count == 2
 

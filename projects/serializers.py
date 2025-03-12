@@ -14,12 +14,13 @@ class ProjectCollaboratorSerializer(serializers.ModelSerializer):
 
 class CollaborationRequestSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = CollaborationRequest
-        fields = ['id', 'user', 'project', 'message', 'status', 'created_at']
-        read_only_fields = ['id', 'user', 'project', 'status', 'created_at']
+        fields = ['id', 'user', 'user_id', 'project', 'message', 'status', 'created_at']
+        read_only_fields = ['id', 'user', 'user_id', 'project', 'status', 'created_at']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -33,13 +34,19 @@ class ProjectSerializer(serializers.ModelSerializer):
     )
     collaborators_count = serializers.IntegerField(read_only=True)
     is_collaborator = serializers.SerializerMethodField()
+    collaborators = ProjectCollaboratorSerializer(
+        source='projectcollaborator_set',
+        many=True,
+        read_only=True
+    )
     
     class Meta:
         model = Project
         fields = [
             'id', 'creator', 'title', 'description', 'repo_url',
             'tech_stack', 'tech_stack_ids', 'status', 'created_at',
-            'updated_at', 'collaborators_count', 'is_collaborator'
+            'updated_at', 'collaborators_count', 'is_collaborator',
+            'collaborators'
         ]
         read_only_fields = ['id', 'creator', 'created_at', 'updated_at']
     
@@ -58,11 +65,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         # Create the project
         project = super().create(validated_data)
         
-        # Add creator as owner collaborator
-        ProjectCollaborator.objects.create(
-            user=self.context['request'].user,
-            project=project,
-            role='owner'
-        )
+        # The Project model's save method already adds the creator as owner collaborator
         
         return project 

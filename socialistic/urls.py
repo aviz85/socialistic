@@ -55,7 +55,9 @@ urlpatterns = [
     path('api/programming-languages/', include('posts.urls_programming_languages')),
     
     # Frontend
-    path('', RedirectView.as_view(url='/static/frontend/login.html'), name='home'),
+    path('', RedirectView.as_view(url='/static/frontend/index.html'), name='home'),
+    # React app catch-all route to allow React Router to handle client-side routing
+    path('app/<path:path>', RedirectView.as_view(url='/static/frontend/index.html'), name='react-routes'),
 ]
 
 # Serve media files in development

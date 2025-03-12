@@ -151,25 +151,17 @@ class CollaborationRequestResponseView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
         
-        # Get the response (approve/reject)
-        response = request.data.get('response', '').lower()
-        if response not in ['approve', 'reject']:
+        # Get the response (accepted/rejected)
+        response_status = request.data.get('status', '').lower()
+        if response_status not in ['accepted', 'rejected']:
             return Response(
-                {"detail": "Response must be either 'approve' or 'reject'."},
+                {"detail": "Status must be either 'accepted' or 'rejected'."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if response == 'approve':
-            # Add user as collaborator
-            ProjectCollaborator.objects.create(
-                user=collaboration_request.user,
-                project=collaboration_request.project,
-                role='contributor'
-            )
-            
-            # Update request status
-            collaboration_request.status = 'approved'
-            collaboration_request.save()
+        if response_status == 'accepted':
+            # Use the accept method
+            collaboration_request.accept()
             
             # Create notification
             Notification.objects.create(
@@ -181,9 +173,18 @@ class CollaborationRequestResponseView(APIView):
                 text=f"Your request to join {collaboration_request.project.title} was approved"
             )
         else:
-            # Update request status
-            collaboration_request.status = 'rejected'
-            collaboration_request.save()
+            # Use the reject method
+            collaboration_request.reject()
+            
+            # Create notification for rejection
+            Notification.objects.create(
+                recipient=collaboration_request.user,
+                sender=request.user,
+                type='project_rejected',
+                content_type=ContentType.objects.get_for_model(Project),
+                object_id=collaboration_request.project.id,
+                text=f"Your request to join {collaboration_request.project.title} was rejected"
+            )
         
         return Response(
             CollaborationRequestSerializer(collaboration_request).data,

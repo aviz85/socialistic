@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from projects.models import Project, ProjectCollaborator, CollaborationRequest
-from tests.factories import ProjectFactory, SkillFactory
+from tests.factories import ProjectFactory, SkillFactory, UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -45,8 +45,8 @@ class TestProjectListCreateAPI:
         data = {
             'title': 'Test Project',
             'description': 'A test project description',
-            'repository_url': 'https://github.com/testuser/test-project',
-            'tech_stack': [skill1.id, skill2.id]
+            'repo_url': 'https://github.com/testuser/test-project',
+            'tech_stack_ids': [skill1.id, skill2.id]
         }
         
         response = auth_client.post(url, data)
@@ -54,7 +54,7 @@ class TestProjectListCreateAPI:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['title'] == 'Test Project'
         assert response.data['description'] == 'A test project description'
-        assert response.data['repository_url'] == 'https://github.com/testuser/test-project'
+        assert response.data['repo_url'] == 'https://github.com/testuser/test-project'
         assert response.data['creator']['id'] == user.id
         
         # Check that the project was created in the database
@@ -139,7 +139,7 @@ class TestProjectDetailAPI:
         data = {
             'title': 'Updated Project Title',
             'description': 'Updated project description',
-            'repository_url': 'https://github.com/testuser/updated-project'
+            'repo_url': 'https://github.com/testuser/updated-project'
         }
         
         response = auth_client.patch(url, data)
@@ -147,13 +147,13 @@ class TestProjectDetailAPI:
         assert response.status_code == status.HTTP_200_OK
         assert response.data['title'] == 'Updated Project Title'
         assert response.data['description'] == 'Updated project description'
-        assert response.data['repository_url'] == 'https://github.com/testuser/updated-project'
+        assert response.data['repo_url'] == 'https://github.com/testuser/updated-project'
         
         # Check that the project was updated in the database
         project.refresh_from_db()
         assert project.title == 'Updated Project Title'
         assert project.description == 'Updated project description'
-        assert project.repository_url == 'https://github.com/testuser/updated-project'
+        assert project.repo_url == 'https://github.com/testuser/updated-project'
 
     @pytest.mark.api
     @pytest.mark.integration
@@ -285,7 +285,7 @@ class TestCollaborationRequestAPI:
         response = auth_client.post(url, data)
         
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['user'] == user.id
+        assert response.data['user_id'] == user.id
         assert response.data['project'] == project.id
         assert response.data['message'] == 'I would like to collaborate on this project.'
         assert response.data['status'] == 'pending'
@@ -399,11 +399,11 @@ class TestCollaborationRequestAPI:
         response = auth_client.post(url, data)
         
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['status'] == 'accepted'
+        assert response.data['status'] == 'approved'
         
         # Check that the request was updated in the database
         request.refresh_from_db()
-        assert request.status == 'accepted'
+        assert request.status == 'approved'
         
         # Check that the user was added as a collaborator
         assert ProjectCollaborator.objects.filter(project=project, user=another_user).exists()

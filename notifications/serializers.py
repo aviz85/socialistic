@@ -13,9 +13,17 @@ class NotificationSerializer(serializers.ModelSerializer):
             'is_read', 'created_at', 'content_type', 'object_id'
         ]
         read_only_fields = [
-            'id', 'recipient', 'sender', 'type', 'text',
-            'created_at', 'content_type', 'object_id'
+            'id', 'sender', 'created_at'
         ]
+    
+    def validate(self, data):
+        """Ensure all required fields are present for creation."""
+        if self.context['request'].method == 'POST':
+            required_fields = ['recipient', 'type', 'content_type', 'object_id', 'text']
+            for field in required_fields:
+                if field not in data:
+                    raise serializers.ValidationError(f"{field} is required")
+        return data
 
 
 class NotificationSettingSerializer(serializers.ModelSerializer):

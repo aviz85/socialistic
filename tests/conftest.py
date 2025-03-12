@@ -163,11 +163,20 @@ def collaboration_request(db, another_user, project):
 @pytest.fixture
 def notification(db, user, another_user):
     """Creates a notification for testing."""
+    from django.contrib.contenttypes.models import ContentType
+    from posts.models import Post
+    
+    # Create a related object (post)
+    post = Post.objects.create(author=user, content="Test post content")
+    content_type = ContentType.objects.get_for_model(post)
+    
     notification = Notification.objects.create(
         recipient=user,
         sender=another_user,
-        notification_type='follow',
+        type='follow',
         text=f"{another_user.username} started following you.",
-        is_read=False
+        is_read=False,
+        content_type=content_type,
+        object_id=post.id
     )
     return notification 

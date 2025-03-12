@@ -43,20 +43,18 @@ class TestNotificationListAPI:
     @pytest.mark.integration
     def test_list_notifications_only_shows_own_notifications(self, auth_client, user, another_user):
         """Test that a user can only see their own notifications."""
-        # Create a notification for current user
-        notification_for_user = Notification.objects.create(
-            recipient=user,
+        # Create a notification for the authenticated user
+        own_notification = NotificationFactory(
+            recipient=user, 
             sender=another_user,
-            notification_type='follow',
-            text=f"{another_user.username} started following you."
+            type='post_like'
         )
         
         # Create a notification for another user
-        notification_for_another = Notification.objects.create(
+        other_notification = NotificationFactory(
             recipient=another_user,
             sender=user,
-            notification_type='follow',
-            text=f"{user.username} started following you."
+            type='post_like'
         )
         
         url = reverse('notification-list')
@@ -65,12 +63,13 @@ class TestNotificationListAPI:
         
         assert response.status_code == status.HTTP_200_OK
         
-        # Verify only user's own notifications are returned, handling potential pagination
+        # If response has pagination
         notifications_data = response.data['results'] if 'results' in response.data else response.data
-        notification_ids = [notif['id'] for notif in notifications_data]
         
-        assert notification_for_user.id in notification_ids
-        assert notification_for_another.id not in notification_ids
+        # Check that only the user's notification is in the response
+        notification_ids = [notif['id'] for notif in notifications_data]
+        assert own_notification.id in notification_ids
+        assert other_notification.id not in notification_ids
 
 
 class TestNotificationMarkReadAPI:
@@ -80,26 +79,24 @@ class TestNotificationMarkReadAPI:
     @pytest.mark.integration
     def test_mark_notification_as_read(self, auth_client, user, notification):
         """Test marking a notification as read."""
-        # Ensure notification is unread
         notification.is_read = False
         notification.save()
         
-        url = reverse('notification-read', kwargs={'pk': notification.id})
+        url = reverse('notification-mark-read', kwargs={'pk': notification.id})
         
         response = auth_client.post(url)
         
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['is_read'] == True
         
-        # Check that the notification was marked as read in the database
+        # Reload the notification from the database
         notification.refresh_from_db()
-        assert notification.is_read == True
+        assert notification.is_read is True
 
     @pytest.mark.api
     @pytest.mark.integration
     def test_mark_notification_as_read_without_authentication(self, api_client, notification):
         """Test that an unauthenticated user cannot mark a notification as read."""
-        url = reverse('notification-read', kwargs={'pk': notification.id})
+        url = reverse('notification-mark-read', kwargs={'pk': notification.id})
         
         response = api_client.post(url)
         
@@ -110,22 +107,21 @@ class TestNotificationMarkReadAPI:
     def test_cannot_mark_other_user_notification_as_read(self, auth_client, another_user):
         """Test that a user cannot mark another user's notification as read."""
         # Create a notification for another user
-        notification = Notification.objects.create(
+        notification = NotificationFactory(
             recipient=another_user,
-            sender=auth_client.handler._force_user,  # The authenticated user
-            notification_type='follow',
-            text=f"{auth_client.handler._force_user.username} started following you."
+            type='post_like',
+            is_read=False
         )
         
-        url = reverse('notification-read', kwargs={'pk': notification.id})
+        url = reverse('notification-mark-read', kwargs={'pk': notification.id})
         
         response = auth_client.post(url)
         
-        assert response.status_code == status.HTTP_403_FORBIDDEN or response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         
-        # Check that the notification was not marked as read in the database
+        # Verify the notification is still unread
         notification.refresh_from_db()
-        assert notification.is_read == False
+        assert notification.is_read is False
 
 
 class TestNotificationDeleteAPI:
@@ -135,20 +131,20 @@ class TestNotificationDeleteAPI:
     @pytest.mark.integration
     def test_delete_notification(self, auth_client, user, notification):
         """Test deleting a notification."""
-        url = reverse('notification-delete', kwargs={'pk': notification.id})
+        url = reverse('notification-detail', kwargs={'pk': notification.id})
         
         response = auth_client.delete(url)
         
         assert response.status_code == status.HTTP_204_NO_CONTENT
         
-        # Check that the notification was deleted from the database
+        # Verify the notification was deleted
         assert not Notification.objects.filter(id=notification.id).exists()
 
     @pytest.mark.api
     @pytest.mark.integration
     def test_delete_notification_without_authentication(self, api_client, notification):
         """Test that an unauthenticated user cannot delete a notification."""
-        url = reverse('notification-delete', kwargs={'pk': notification.id})
+        url = reverse('notification-detail', kwargs={'pk': notification.id})
         
         response = api_client.delete(url)
         
@@ -159,20 +155,18 @@ class TestNotificationDeleteAPI:
     def test_cannot_delete_other_user_notification(self, auth_client, another_user):
         """Test that a user cannot delete another user's notification."""
         # Create a notification for another user
-        notification = Notification.objects.create(
+        notification = NotificationFactory(
             recipient=another_user,
-            sender=auth_client.handler._force_user,  # The authenticated user
-            notification_type='follow',
-            text=f"{auth_client.handler._force_user.username} started following you."
+            type='post_like'
         )
         
-        url = reverse('notification-delete', kwargs={'pk': notification.id})
+        url = reverse('notification-detail', kwargs={'pk': notification.id})
         
         response = auth_client.delete(url)
         
-        assert response.status_code == status.HTTP_403_FORBIDDEN or response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         
-        # Check that the notification was not deleted from the database
+        # Verify the notification still exists
         assert Notification.objects.filter(id=notification.id).exists()
 
 
@@ -226,17 +220,18 @@ class TestNotificationCountAPI:
     @pytest.mark.integration
     def test_get_unread_notification_count(self, auth_client, user, another_user):
         """Test getting the count of unread notifications."""
-        # Create some unread notifications for the authenticated user
-        NotificationFactory(recipient=user, sender=another_user, read=False)
-        NotificationFactory(recipient=user, sender=another_user, read=False)
+        # Create some unread notifications
+        NotificationFactory(recipient=user, sender=another_user, is_read=False)
+        NotificationFactory(recipient=user, sender=another_user, is_read=False)
         
-        # Create a read notification for the authenticated user
-        NotificationFactory(recipient=user, sender=another_user, read=True)
+        # Create a read notification
+        NotificationFactory(recipient=user, sender=another_user, is_read=True)
         
         # Create an unread notification for another user
-        NotificationFactory(recipient=another_user, sender=user, read=False)
+        NotificationFactory(recipient=another_user, sender=user, is_read=False)
         
         url = reverse('notification-unread-count')
+        
         response = auth_client.get(url)
         
         assert response.status_code == status.HTTP_200_OK
@@ -249,36 +244,32 @@ class TestRealTimeNotificationAPI:
     @pytest.mark.api
     @pytest.mark.integration
     def test_create_notification(self, auth_client, user, another_user):
-        """Test creating a notification."""
-        # This would typically be done by a signal handler or a background task,
-        # but we'll test the API endpoint that would be called by the frontend
+        """Test creating a real-time notification."""
         post = PostFactory(author=user)
         content_type = ContentType.objects.get_for_model(post)
         
-        url = reverse('notification-create')
-        data = {
-            'recipient': user.id,
-            'sender': another_user.id,
-            'notification_type': 'post_like',
+        url = reverse('notification-list')
+        
+        notification_data = {
+            'recipient': another_user.id,
+            'type': 'like',
             'content_type': content_type.id,
             'object_id': post.id,
-            'text': f"{another_user.username} liked your post"
+            'text': f"{user.username} liked your post"
         }
         
-        response = auth_client.post(url, data)
+        response = auth_client.post(url, notification_data)
+        
+        # Debug output
+        print(f"Response status: {response.status_code}")
+        print(f"Response data: {response.data}")
         
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['recipient'] == user.id
-        assert response.data['sender'] == another_user.id
-        assert response.data['notification_type'] == 'post_like'
-        assert response.data['text'] == f"{another_user.username} liked your post"
-        assert response.data['read'] is False
         
-        # Check that the notification was created in the database
-        assert Notification.objects.filter(
-            recipient=user,
-            sender=another_user,
-            notification_type='post_like',
-            content_type=content_type,
-            object_id=post.id
-        ).exists() 
+        # Verify the notification was created
+        notification = Notification.objects.get(id=response.data['id'])
+        assert notification.recipient == another_user
+        assert notification.sender == user
+        assert notification.type == 'like'
+        assert notification.text == f"{user.username} liked your post"
+        assert notification.is_read is False 

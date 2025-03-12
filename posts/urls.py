@@ -6,7 +6,6 @@ from posts.views.comments import (
     CommentListCreateView, CommentDetailView, CommentLikeView
 )
 from posts.views.search import PostSearchView
-from posts.views.programming_languages import ProgrammingLanguageListView
 
 urlpatterns = [
     # Posts
@@ -21,7 +20,4 @@ urlpatterns = [
     
     # Search
     path('search/', PostSearchView.as_view(), name='post-search'),
-    
-    # Programming Languages
-    path('programming-languages/', ProgrammingLanguageListView.as_view(), name='programming-language-list'),
 ] 

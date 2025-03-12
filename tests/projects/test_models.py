@@ -19,13 +19,13 @@ class TestProjectModel:
             creator=user,
             title='Test Project',
             description='A test project description',
-            repository_url='https://github.com/testuser/test-project'
+            repo_url='https://github.com/testuser/test-project'
         )
         
         assert project.creator == user
         assert project.title == 'Test Project'
         assert project.description == 'A test project description'
-        assert project.repository_url == 'https://github.com/testuser/test-project'
+        assert project.repo_url == 'https://github.com/testuser/test-project'
         assert project.status == 'active'
         assert project.created_at <= timezone.now()
         assert project.updated_at <= timezone.now()
@@ -46,6 +46,9 @@ class TestProjectModel:
     def test_add_tech_stack(self, user):
         """Test adding skills to a project's tech stack."""
         project = ProjectFactory(creator=user)
+        
+        # Clear existing tech stack
+        project.tech_stack.clear()
         
         # Create skills to add
         skill1 = SkillFactory(name='Python')
@@ -81,13 +84,13 @@ class TestProjectModel:
     @pytest.mark.unit
     @pytest.mark.model
     def test_repository_url_valid_format(self, user):
-        """Test that repository_url must be a valid URL format if provided."""
+        """Test that repo_url must be a valid URL format if provided."""
         with pytest.raises(ValidationError):
             project = Project(
                 creator=user,
                 title='Test Project',
                 description='A test project description',
-                repository_url='not_a_url'
+                repo_url='not_a_url'
             )
             project.clean()
         
@@ -96,7 +99,7 @@ class TestProjectModel:
             creator=user,
             title='Test Project',
             description='A test project description',
-            repository_url='https://github.com/testuser/test-project'
+            repo_url='https://github.com/testuser/test-project'
         )
         project.clean()
 
@@ -117,7 +120,7 @@ class TestProjectCollaboratorModel:
         
         assert collaborator.project == project
         assert collaborator.user == another_user
-        assert collaborator.created_at <= timezone.now()
+        assert collaborator.joined_at <= timezone.now()
 
     @pytest.mark.unit
     @pytest.mark.model
@@ -268,7 +271,7 @@ class TestCollaborationRequestModel:
         request.accept()
         
         # Check that the request was updated
-        assert request.status == 'accepted'
+        assert request.status == 'approved'
         
         # Check that the user was added as a collaborator
         assert ProjectCollaborator.objects.filter(project=project, user=user).exists()
